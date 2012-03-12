@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		viewActivate="view1_viewActivateHandler(event)"
+		actionBarVisible="true" tabBarVisible="true" title="list">
+	<fx:Script>
+		<![CDATA[
+			import business.DBService;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.ViewNavigatorEvent;
+			
+			[Bindable]
+			private var _tasksList:ArrayCollection;
+			protected function view1_viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				_tasksList = DBService.instance.getTasksList();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:actionContent>
+		<s:Button label="New"/>
+	</s:actionContent>
+	<s:List left="0" right="0" top="0" bottom="0" dataProvider="{_tasksList}"></s:List>
+	
+</s:View>

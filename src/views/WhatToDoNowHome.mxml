@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		actionBarVisible="false" tabBarVisible="true" title="Home"
+		viewActivate="view1_viewActivateHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import business.DBService;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.ViewNavigatorEvent;
+
+			[Bindable]
+			[Embed("assets/launchpad_default_icon32.png")]
+			public var fbIcon:Class;
+
+			[Bindable]
+			protected var _viewsAC:ArrayCollection = new ArrayCollection(); 
+
+			protected function view1_viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				_viewsAC = DBService.instance.getToDoNowList();
+			}
+		]]>
+	</fx:Script>
+
+	<s:navigationContent/>
+		<s:List id="viewsList" top="0" bottom="0" left="0" right="0" dataProvider="{_viewsAC}">
+			
+		</s:List>
+</s:View>
