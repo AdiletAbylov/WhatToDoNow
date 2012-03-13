@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		
+		tabBarVisible="false" title="Edit Task">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"/>
+	</s:layout>
+
+	<fx:Script>
+		<![CDATA[
+			import business.DBService;
+			
+			import vo.TaskVO;
+			
+			protected function onRemove(event:MouseEvent):void
+			{
+				DBService.instance.removeTaskByID(data.id);
+				navigator.popView()
+			}
+			
+			protected function onSave(event:MouseEvent):void
+			{
+				var task:TaskVO = new TaskVO();
+				task.id = data.id;
+				task.name = tasknameTextArea.text;
+				DBService.instance.editTask(task);
+				navigator.popView()
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:TextArea height="70%" text="{data.name}" id="tasknameTextArea"/>
+	<s:Button width="90%" label="Save" click="onSave(event)" enabled="{tasknameTextArea.text.length > 0}"/>
+	<s:Button width="90%" label="Remove" color="#CE1212" click="onRemove(event)"/>
+	<s:navigationContent>
+		<s:Button id="backButton" label="Back" styleName="backButton"
+				  click="navigator.popView()"
+				 /> 
+	</s:navigationContent>
+</s:View>

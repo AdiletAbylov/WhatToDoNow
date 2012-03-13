@@ -8,8 +8,7 @@ package business
 	import mx.collections.ArrayCollection;
 	
 	import vo.TaskVO;
-	import vo.ToDoTaskVO;
-
+	
 	public class DBService
 	{
 		public function DBService()
@@ -42,15 +41,18 @@ package business
 		
 		public function initDatabase():void
 		{
-			_sqlConnection.open( File.applicationStorageDirectory.resolvePath(DB_NAME));
-			var statement:SQLStatement = new SQLStatement();
-			statement.sqlConnection = _sqlConnection;
-			statement.text = "CREATE TABLE IF NOT EXISTS todoList (task_id INTEGER, done BOOLEAN)";
-			statement.execute();
-			
-			statement.text = "CREATE TABLE IF NOT EXISTS tasksList(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-																	"name TEXT)";
-			statement.execute();
+			if(!_sqlConnection.connected)
+			{
+				_sqlConnection.open( File.applicationStorageDirectory.resolvePath(DB_NAME));
+				var statement:SQLStatement = new SQLStatement();
+				statement.sqlConnection = _sqlConnection;
+				statement.text = "CREATE TABLE IF NOT EXISTS todoList (task_id INTEGER, done BOOLEAN)";
+				statement.execute();
+				
+				statement.text = "CREATE TABLE IF NOT EXISTS tasksList(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"name TEXT)";
+				statement.execute();
+			}
 		}
 		
 		public function getToDoNowList():ArrayCollection
@@ -60,7 +62,7 @@ package business
 			statement.sqlConnection = _sqlConnection;
 			statement.text = "SELECT tasksList.id, tasksList.name, todoList.done FROM todoList, tasksList WHERE tasksList.id=todoList.task_id";
 			statement.execute();
-			statement.itemClass = ToDoTaskVO;
+			statement.itemClass = TaskVO;
 			list = new ArrayCollection( statement.getResult().data );
 			return list;
 		}
@@ -79,23 +81,39 @@ package business
 		
 		public function addTask(task:TaskVO):void
 		{
-			
+			var statement:SQLStatement = new SQLStatement();
+			statement.sqlConnection = _sqlConnection;
+			statement.text = "INSERT INTO tasksList(name) VALUES(:taskname)";
+			statement.parameters[":taskname"] = task.name;
+			statement.execute();
 		}
 		
 		public function editTask(task:TaskVO):void
 		{
-			
-		
+			var statement:SQLStatement = new SQLStatement();
+			statement.sqlConnection = _sqlConnection;
+			statement.text = "UPDATE tasksList SET name = :taskname WHERE id=:taskid";
+			statement.parameters[":taskname"] = task.name;
+			statement.parameters[":taskid"] = task.id;
+			statement.execute();
 		}
 		
-		public function removeTask(task:TaskVO):void
+		public function removeTaskByID(taskID:int):void
 		{
-			
+			var statement:SQLStatement = new SQLStatement();
+			statement.sqlConnection = _sqlConnection;
+			statement.text = "DELETE FROM tasksList WHERE id=:taskid";
+			statement.parameters[":taskid"] = taskID;
+			statement.execute();
 		}
 		
-		public function addTaskToToDoNowList(task:TaskVO):void
+		public function addTaskToToDoNowList(taskID:int):void
 		{
-			
+			var statement:SQLStatement = new SQLStatement();
+			statement.sqlConnection = _sqlConnection;
+			statement.text = "INSERT INTO todoList(task_id) VALUES(:task_id)";
+			statement.parameters[":task_id"] = taskID;
+			statement.execute();
 		}
 	}
 }

@@ -1,0 +1,12 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+
+
+global
+{
+}
+	
+.backButton
+{
+	skinClass:ClassReference("spark.skins.mobile.BeveledBackButtonSkin");
+}

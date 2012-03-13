@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		viewActivate="view1_viewActivateHandler(event)"
+		actionBarVisible="true" tabBarVisible="true" title="Tasks" xmlns:renderers="views.renderers.*">
+	<fx:Script>
+		<![CDATA[
+			import business.DBService;
+			
+			import events.DoItEvent;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			import vo.TaskVO;
+			
+			[Bindable]
+			private var _tasksList:ArrayCollection;
+			protected function view1_viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				_tasksList = DBService.instance.getTasksList();
+				tasksList.addEventListener(DoItEvent.DO_IT, onDoItEvent);
+			}
+			
+			protected function onAddTask(event:MouseEvent):void
+			{
+				if(tasknameTextArea.text.length > 0)
+				{
+					var task:TaskVO = new TaskVO();
+					task.name = tasknameTextArea.text;
+					DBService.instance.addTask(task);
+					_tasksList = DBService.instance.getTasksList();
+				}
+				addTaskButton.closeDropDown();
+			}
+			
+			protected function list1_changeHandler(event:IndexChangeEvent):void
+			{
+				navigator.pushView( EditTaskView, tasksList.selectedItem);
+			}
+			
+			protected function onDoItEvent(event:DoItEvent):void
+			{
+				event.stopImmediatePropagation();
+				DBService.instance.addTaskToToDoNowList(event.taskID);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="State1"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:actionContent>
+		<s:CalloutButton label="New"
+						 id="addTaskButton"
+						 horizontalPosition="end" verticalPosition="after">
+			<s:calloutLayout>
+				<s:VerticalLayout horizontalAlign="center"/>
+			</s:calloutLayout>
+		
+			<s:TextArea height="200" id="tasknameTextArea"/>
+			<s:Button label="Save" width="100%" click="onAddTask(event)"/>
+		</s:CalloutButton>
+	</s:actionContent>
+	<s:List left="0" right="0" top="0" bottom="0"
+			labelField="name"
+			id="tasksList"
+			change="list1_changeHandler(event)"
+			dataProvider="{_tasksList}">
+		<s:itemRenderer>
+			<fx:Component>
+				<renderers:TaskItemRenderer/>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+</s:View>

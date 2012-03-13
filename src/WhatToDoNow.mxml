@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:TabbedViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark"
-	persistNavigatorState="true" 
-	navigatorStateSaving="onPersisting(event)" 
-	navigatorStateLoading="onRestoring(event)"
+	
+	
 	applicationComplete="onApplicationComplete()">
-
+	<fx:Style source="WhatToDoNow.css"/>
 	<fx:Script>
 		<![CDATA[
 			import business.DBService;
@@ -23,7 +22,7 @@
 
 				// Get notified whan a global error occurs
 				loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onError);
-				initLocalDatabase();
+				
 			}
 
 			// Handle device orientation changes
@@ -56,28 +55,11 @@
     			e.preventDefault();
     			trace("An error has occurred and been caught by the global error handler: " + e.error.toString(), "My Global Error Handler");
 			}
-
-			// Called when application is about to persist data (can call cancel if this is not desired)
-			protected function onPersisting(e:FlexEvent):void
-			{
-				trace("Handling persisting event");
-			}
-
-			// Called when application is about to restore data (can call cancel if this is not desired)
-			protected function onRestoring(e:FlexEvent):void
-			{
-				trace("Handling restoring event");
-			}
-			
-			private function initLocalDatabase():void
-			{
-				DBService.instance.initDatabase();
-			}
 			
 		]]>
 	</fx:Script>
 
 	<s:ViewNavigator label="ToDo Now" firstView='views.WhatToDoNowHome' width="100%" height="100%"/>
-	<s:ViewNavigator label='Tasks' firstView='views.list' width="100%" height="100%"/>
-	<s:ViewNavigator label='Settings' firstView='views.settings' width="100%" height="100%"/>
+	<s:ViewNavigator label='Tasks' firstView='views.TasksListView' width="100%" height="100%"/>
+	<s:ViewNavigator label='Settings' firstView='views.SettingsView' width="100%" height="100%"/>
 </s:TabbedViewNavigatorApplication>
