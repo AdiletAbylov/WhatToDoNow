@@ -14,6 +14,9 @@ package views.renderers
 			super();
 		}
 		
+		private var _clickingButton:Boolean;
+		private var _doItButton:Button;
+		
 		override protected function createChildren():void
 		{
 			super.createChildren();
@@ -24,10 +27,17 @@ package views.renderers
 		{
 			_doItButton = new Button();
 			_doItButton.label = "Do It";
-			//_doItButton.addEventListener(MouseEvent.CLICK, onDoItClick);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			addChild(_doItButton);
+		}
+		
+		override protected function set down(value:Boolean):void
+		{
+			if(!_clickingButton)
+			{
+				super.down = value;
+			}
 		}
 		
 		protected function onMouseUp(event:MouseEvent):void
@@ -35,27 +45,14 @@ package views.renderers
 			if(_clickingButton)
 			{
 				_clickingButton = false;
-				event.stopImmediatePropagation();
-				event.preventDefault();
 			}
 		}
 		
-		override protected function drawBackground(unscaledWidth:Number, unscaledHeight:Number):void
-		{
-			if(_clickingButton)
-			{
-				return;
-			}
-			super.drawBackground(unscaledWidth, unscaledHeight);
-		}
-		
-		private var _clickingButton:Boolean;
 		protected function onMouseDown(event:MouseEvent):void
 		{
 			if(event.target is Button)
 			{
 				event.stopImmediatePropagation();
-				
 				event.preventDefault();
 				_clickingButton = true;
 				var doitEvent:DoItEvent = new DoItEvent(DoItEvent.DO_IT, true );
@@ -64,12 +61,6 @@ package views.renderers
 			}
 		}
 		
-		protected function onDoItClick(event:MouseEvent):void
-		{
-			trace("DO IT!");
-		}
-		
-		private var _doItButton:Button;
 		
 		override protected function layoutContents(unscaledWidth:Number, unscaledHeight:Number):void
 		{
