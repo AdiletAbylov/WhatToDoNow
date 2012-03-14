@@ -115,5 +115,24 @@ package business
 			statement.parameters[":task_id"] = taskID;
 			statement.execute();
 		}
+		
+		public function setToDoTaskStatus(taskID:int, done:Boolean):void
+		{
+			var statement:SQLStatement = new SQLStatement();
+			statement.sqlConnection = _sqlConnection;
+			statement.text = "UPDATE todoList SET done=:done WHERE task_id=:task_id";
+			statement.parameters[":task_id"] = taskID;
+			statement.parameters[":done"] = done;
+			statement.execute();
+		}
+		
+		public function clearDoneTasks():void
+		{
+			var statement:SQLStatement = new SQLStatement();
+			statement.sqlConnection = _sqlConnection;
+			statement.text = "DELETE FROM todoList WHERE done=TRUE";
+			
+			statement.execute();
+		}
 	}
 }

@@ -5,17 +5,18 @@ package views.renderers
 	import flash.events.MouseEvent;
 	
 	import spark.components.Button;
+	import spark.components.CheckBox;
 	import spark.components.LabelItemRenderer;
 	
-	public class TaskItemRenderer extends LabelItemRenderer
+	public class ToDoItemRenderer extends LabelItemRenderer
 	{
-		public function TaskItemRenderer()
+		public function ToDoItemRenderer()
 		{
 			super();
 		}
 		
-		private var _clickingButton:Boolean;
-		private var _doItButton:Button;
+		private var _clickingCheckBox:Boolean;
+		private var _doneCheckBox:CheckBox;
 		
 		override protected function createChildren():void
 		{
@@ -25,16 +26,15 @@ package views.renderers
 		
 		private function createDoItButton():void
 		{
-			_doItButton = new Button();
-			_doItButton.label = "Do It";
+			_doneCheckBox = new CheckBox();
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			addChild(_doItButton);
+			addChild(_doneCheckBox);
 		}
 		
 		override protected function set down(value:Boolean):void
 		{
-			if(!_clickingButton)
+			if(!_clickingCheckBox)
 			{
 				super.down = value;
 			}
@@ -42,29 +42,30 @@ package views.renderers
 		
 		protected function onMouseUp(event:MouseEvent):void
 		{
-			if(_clickingButton)
+			if(_clickingCheckBox)
 			{
-				_clickingButton = false;
+				_clickingCheckBox = false;
+				var doitEvent:DoItEvent = new DoItEvent(DoItEvent.DID_IT, true );
+				doitEvent.taskID = data.id;
+				doitEvent.done = _doneCheckBox.selected;
+				dispatchEvent( doitEvent );
 			}
 		}
 		
 		protected function onMouseDown(event:MouseEvent):void
 		{
-			if(event.target is Button)
+			if(event.target is CheckBox)
 			{
 				event.stopImmediatePropagation();
 				event.preventDefault();
-				_clickingButton = true;
-				var doitEvent:DoItEvent = new DoItEvent(DoItEvent.DO_IT, true );
-				doitEvent.taskID = data.id;
-				dispatchEvent( doitEvent );
+				_clickingCheckBox = true;
 			}
 		}
 		
 		
 		override protected function layoutContents(unscaledWidth:Number, unscaledHeight:Number):void
 		{
-			if(_doItButton)
+			if(_doneCheckBox)
 			{
 				var paddingLeft:Number   = getStyle("paddingLeft"); 
 				var paddingRight:Number  = getStyle("paddingRight");
@@ -91,10 +92,12 @@ package views.renderers
 					}
 				
 				
-				var buttonHeight:Number = getElementPreferredHeight(_doItButton) - 10;
-				setElementSize(_doItButton, 90, buttonHeight);    
+				var buttonHeight:Number = getElementPreferredHeight(_doneCheckBox);
+				var buttonWidth:Number = getElementPreferredWidth(_doneCheckBox)
+				setElementSize(_doneCheckBox, buttonWidth, buttonHeight);    
 				var buttonY:Number = Math.round(vAlign * (viewHeight - buttonHeight))  + paddingTop;
-				setElementPosition(_doItButton, paddingLeft, buttonY);
+				setElementPosition(_doneCheckBox, paddingLeft, buttonY);
+				_doneCheckBox.selected = data.done;
 				
 				if (!labelDisplay)
 					return;
@@ -102,7 +105,7 @@ package views.renderers
 				// measure the label component
 				// text should take up the rest of the space width-wise, but only let it take up
 				// its measured textHeight so we can position it later based on verticalAlign
-				var labelWidth:Number = Math.max(viewWidth - _doItButton.width - 10, 0); 
+				var labelWidth:Number = Math.max(viewWidth - _doneCheckBox.width - 10, 0); 
 				var labelHeight:Number = 0;
 				
 				if (label != "")
@@ -120,7 +123,7 @@ package views.renderers
 				
 				// We want to center using the "real" ascent
 				var labelY:Number = Math.round(vAlign * (viewHeight - labelHeight))  + paddingTop;
-				setElementPosition(labelDisplay, paddingLeft + _doItButton.width + 10, labelY);
+				setElementPosition(labelDisplay, paddingLeft + _doneCheckBox.width + 10, labelY);
 				
 				// attempt to truncate the text now that we have its official width
 				labelDisplay.truncateToFit();

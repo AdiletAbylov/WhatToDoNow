@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
-		actionBarVisible="false" tabBarVisible="true" title="What ToDo Now"
-		viewActivate="view1_viewActivateHandler(event)">
+		actionBarVisible="true" tabBarVisible="true" title="What ToDo Now"
+		viewActivate="view1_viewActivateHandler(event)" xmlns:renderers="views.renderers.*">
 
 	<fx:Script>
 		<![CDATA[
 			import business.DBService;
 			
+			import events.DoItEvent;
+			
 			import mx.collections.ArrayCollection;
+			import mx.events.CollectionEvent;
 			
 			import spark.events.ViewNavigatorEvent;
 
@@ -23,13 +26,34 @@
 			{
 				DBService.instance.initDatabase();
 				_viewsAC = DBService.instance.getToDoNowList();
+				viewsList.addEventListener(DoItEvent.DID_IT, onDidItEvent);
 			}
+			
+			protected function onDidItEvent(event:DoItEvent):void
+			{
+				event.stopImmediatePropagation();
+				DBService.instance.setToDoTaskStatus(event.taskID, event.done );
+			}
+			
+			protected function clear(event:MouseEvent):void
+			{
+				DBService.instance.clearDoneTasks();
+				_viewsAC = DBService.instance.getToDoNowList();
+			}
+			
 		]]>
 	</fx:Script>
+	<s:actionContent>
+		<s:Button label="Clear" click="clear(event)"/>
+	</s:actionContent>
 
 	<s:navigationContent/>
-		<s:List id="viewsList" top="0" bottom="0" left="0" right="0"
-				labelField="name"
-				dataProvider="{_viewsAC}">
+		<s:List id="viewsList" left="0" right="0" top="0" bottom="0" dataProvider="{_viewsAC}"
+				labelField="name">
+			<s:itemRenderer>
+				<fx:Component>
+					<renderers:ToDoItemRenderer/>
+				</fx:Component>
+			</s:itemRenderer>
 		</s:List>
 </s:View>
