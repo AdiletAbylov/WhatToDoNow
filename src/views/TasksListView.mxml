@@ -56,13 +56,19 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:actionContent>
-		<s:CalloutButton label="New"
+		
+		<s:CalloutButton
 						 id="addTaskButton"
 						 horizontalPosition="end" verticalPosition="after">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/new 32.png')"
+										source240dpi="@Embed('assets/new 48.png')"
+										source320dpi="@Embed('assets/new 64.png')"/>
+			</s:icon>
 			<s:calloutLayout>
 				<s:VerticalLayout horizontalAlign="center"/>
 			</s:calloutLayout>
-		
+			
 			<s:TextArea height="200" id="tasknameTextArea"/>
 			<s:Button label="Save" width="100%" click="onAddTask(event)"/>
 		</s:CalloutButton>
