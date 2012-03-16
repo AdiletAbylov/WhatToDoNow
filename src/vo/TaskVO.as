@@ -8,5 +8,6 @@ package vo
 		}
 		public var id:int;
 		public var name:String;
+		public var added:Boolean;
 	}
 }

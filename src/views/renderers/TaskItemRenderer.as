@@ -61,6 +61,14 @@ package views.renderers
 			}
 		}
 		
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			if(_doItButton)
+			{
+				_doItButton.enabled = data.added == null;
+			}
+		}
 		
 		override protected function layoutContents(unscaledWidth:Number, unscaledHeight:Number):void
 		{

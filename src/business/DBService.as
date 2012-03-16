@@ -8,6 +8,7 @@ package business
 	import mx.collections.ArrayCollection;
 	
 	import vo.TaskVO;
+	import vo.ToDoTaskVO;
 	
 	public class DBService
 	{
@@ -46,11 +47,10 @@ package business
 				_sqlConnection.open( File.applicationStorageDirectory.resolvePath(DB_NAME));
 				var statement:SQLStatement = new SQLStatement();
 				statement.sqlConnection = _sqlConnection;
-				statement.text = "CREATE TABLE IF NOT EXISTS todoList (task_id INTEGER, done BOOLEAN)";
+				statement.text = "CREATE TABLE IF NOT EXISTS todoList (task_id INTEGER, done BOOL DEFAULT FALSE)";
 				statement.execute();
 				
-				statement.text = "CREATE TABLE IF NOT EXISTS tasksList(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-					"name TEXT)";
+				statement.text = "CREATE TABLE IF NOT EXISTS tasksList(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT)";
 				statement.execute();
 			}
 		}
@@ -62,7 +62,7 @@ package business
 			statement.sqlConnection = _sqlConnection;
 			statement.text = "SELECT tasksList.id, tasksList.name, todoList.done FROM todoList, tasksList WHERE tasksList.id=todoList.task_id";
 			statement.execute();
-			statement.itemClass = TaskVO;
+			statement.itemClass = ToDoTaskVO;
 			list = new ArrayCollection( statement.getResult().data );
 			return list;
 		}
@@ -72,7 +72,7 @@ package business
 			var list:ArrayCollection;
 			var statement:SQLStatement = new SQLStatement();
 			statement.sqlConnection = _sqlConnection;
-			statement.text = "SELECT * FROM tasksList";
+			statement.text = "SELECT tasksList.id, tasksList.name, ifnull(todoList.done, null) as added FROM tasksList LEFT JOIN todoList ON tasksList.id=todoList.task_id";
 			statement.execute();
 			statement.itemClass = TaskVO;
 			list = new ArrayCollection( statement.getResult().data );
