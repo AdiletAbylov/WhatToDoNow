@@ -11,6 +11,7 @@
 			
 			import mx.collections.ArrayCollection;
 			
+			import spark.events.DropDownEvent;
 			import spark.events.IndexChangeEvent;
 			import spark.events.ViewNavigatorEvent;
 			
@@ -33,6 +34,7 @@
 					DBService.instance.addTask(task);
 					_tasksList = DBService.instance.getTasksList();
 				}
+				
 				addTaskButton.closeDropDown();
 			}
 			
@@ -47,6 +49,11 @@
 				DBService.instance.addTaskToToDoNowList(event.taskID);
 			}
 			
+			protected function addTaskButton_closeHandler(event:DropDownEvent):void
+			{
+				tasknameTextArea.text = '';
+			}
+			
 		]]>
 	</fx:Script>
 	<s:states>
@@ -56,20 +63,14 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:actionContent>
+		<s:CalloutButton id="addTaskButton" label="+" close="addTaskButton_closeHandler(event)"
+						 fontSize="36" fontWeight="bold" horizontalPosition="end"
+						 textDecoration="none" verticalPosition="after">
 		
-		<s:CalloutButton
-						 id="addTaskButton"
-						 horizontalPosition="end" verticalPosition="after">
-			<s:icon>
-				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/new 32.png')"
-										source240dpi="@Embed('assets/new 48.png')"
-										source320dpi="@Embed('assets/new 64.png')"/>
-			</s:icon>
 			<s:calloutLayout>
 				<s:VerticalLayout horizontalAlign="center"/>
 			</s:calloutLayout>
-			
-			<s:TextArea height="200" id="tasknameTextArea"/>
+			<s:TextArea height="150" id="tasknameTextArea" />
 			<s:Button label="Save" width="100%" click="onAddTask(event)"/>
 		</s:CalloutButton>
 	</s:actionContent>

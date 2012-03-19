@@ -4,7 +4,8 @@
 		
 		tabBarVisible="false" title="Edit Task">
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center"/>
+		<s:VerticalLayout horizontalAlign="center" paddingBottom="10" paddingLeft="5"
+						  paddingRight="5" paddingTop="10"/>
 	</s:layout>
 
 	<fx:Script>
@@ -33,9 +34,9 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:TextArea height="70%" text="{data.name}" id="tasknameTextArea"/>
-	<s:Button width="90%" label="Save" click="onSave(event)" enabled="{tasknameTextArea.text.length > 0}"/>
-	<s:Button width="90%" label="Remove" color="#CE1212" click="onRemove(event)"/>
+	<s:TextArea id="tasknameTextArea" width="100%" height="70%" text="{data.name}"/>
+	<s:Button width="100%" label="Save" click="onSave(event)" enabled="{tasknameTextArea.text.length > 0}"/>
+	<s:Button width="100%" label="Remove" color="#CE1212" click="onRemove(event)"/>
 	<s:navigationContent>
 		<s:Button id="backButton" label="Back" styleName="backButton"
 				  click="navigator.popView()"
